@@ -2,7 +2,7 @@ powerLimitForAutotap = 100
 countclicks = 34
 
 // do not touch
-recharging = false
+recharging = true
 skipClick = false
 _boost = false
 
