@@ -30,7 +30,9 @@ C 07.01 сессия с браузера держится не более 3ех 
 
 Данный скрипт позволяет автоматически собирать ракеты, появляющиеся в игре, а также автоматически тапать до достижения определенного баланса. Ниже приведены параметры, которые можно редактировать для настройки скрипта:
 
-- `globalscore`: параметр, отвечающий за определение целевого баланса. Скрипт будет автоматически тапать для достижения этого баланса.
+- `powerLimitForAutotap`: параметр, отвечающий за определение целевого баланса. Скрипт будет автоматически тапать для достижения этого баланса.
+#Update - В отличие от оригинального скрипта энергия будет растрачиваться до 0 при достижении выставленного лимита
+
 - `countclicks`: параметр, определяющий количество нажатий для выполнения функции. Скрипт будет выполнять функцию заданное количество раз.
 
 По умолчанию скрипт выполняет нажатия каждые 500 мс, но вы можете экспериментировать с этим значением для достижения наилучших результатов. 
@@ -46,8 +48,11 @@ setInterval(click, 500);
 
 Сам скрипт:
 ```javascript
-globalscore = 1000
+powerLimitForAutotap = 100
 countclicks = 34
+recharging = false
+skipClick = false
+
 async function click() {
     let cc = document.querySelectorAll('div[class^="_notcoin"]');
     let scoreElement = document.querySelector('div[class^="_scoreCurrent"]');
@@ -61,7 +66,18 @@ async function click() {
     for (let step = 0; step < countclicks; step++) {
         score = parseInt(scoreElement.textContent);
 
-        if (score > globalscore) {
+        if (skipClick) {
+            break;
+        }
+        
+        if (recharging) {
+            if (score >= powerLimitForAutotap) {
+                recharging = false;
+            }
+            break;
+        }
+
+        if (score > 0) {
             try {
                 await new Promise((resolve) => {
                     cc[0][Object.keys(cc[0])[1]].onTouchStart('');
@@ -69,10 +85,19 @@ async function click() {
                 });
             } catch (error) {}
         } else {
+            recharging = true;
             break;
         }
     }
 }
 
 setInterval(click, 500);
+
+function start() {
+    skipClick = false;
+}
+
+function stop() {
+    skipClick = true;
+}
 ```
