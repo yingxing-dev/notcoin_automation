@@ -18,3 +18,49 @@ tgWebAppPlatform=ios.
 Измененную ссылку отправляем в браузер.
 8. Откройте измененную ссылку в браузере.
 ![img_3.png](img_3.png)
+
+# Скрипт для автоматизации нажатий
+
+Данный скрипт позволяет автоматически собирать ракеты, появляющиеся в игре, а также автоматически тапать до достижения определенного баланса. Ниже приведены параметры, которые можно редактировать для настройки скрипта:
+
+- `globalscore`: параметр, отвечающий за определение целевого баланса. Скрипт будет автоматически тапать для достижения этого баланса.
+- `countclicks`: параметр, определяющий количество нажатий для выполнения функции. Скрипт будет выполнять функцию заданное количество раз.
+
+По умолчанию скрипт выполняет нажатия каждые 500 мс, но вы можете экспериментировать с этим значением для достижения наилучших результатов.
+
+```javascript
+setInterval(click, 500);
+```
+
+Сам скрипт:
+```javascript
+globalscore = 1000
+countclicks = 34
+async function click() {
+    let cc = document.querySelectorAll('div[class^="_notcoin"]');
+    let scoreElement = document.querySelector('div[class^="_scoreCurrent"]');
+    let score = parseInt(scoreElement.textContent);
+    
+    try {
+        let imrocket = document.querySelectorAll('img[class^="_root"]');
+        imrocket[0][Object.keys(imrocket[0])[1]].onClick();
+    } catch (error) {}
+    
+    for (let step = 0; step < countclicks; step++) {
+        score = parseInt(scoreElement.textContent);
+
+        if (score > globalscore) {
+            try {
+                await new Promise((resolve) => {
+                    cc[0][Object.keys(cc[0])[1]].onTouchStart('');
+                    setTimeout(resolve, 100);
+                });
+            } catch (error) {}
+        } else {
+            break;
+        }
+    }
+}
+
+setInterval(click, 500);
+```
