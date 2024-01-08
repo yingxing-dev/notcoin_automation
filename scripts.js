@@ -1,7 +1,10 @@
 powerLimitForAutotap = 100
 countclicks = 34
+
+// do not touch
 recharging = false
 skipClick = false
+boost = false
 
 async function click() {
     let cc = document.querySelectorAll('div[class^="_notcoin"]');
@@ -16,18 +19,20 @@ async function click() {
     for (let step = 0; step < countclicks; step++) {
         score = parseInt(scoreElement.textContent);
 
-        if (skipClick) {
-            break;
-        }
-        
-        if (recharging) {
-            if (score >= powerLimitForAutotap) {
-                recharging = false;
+        if (!boost) {
+            if (skipClick) {
+                break;
             }
-            break;
+        
+            if (recharging) {
+                if (score >= powerLimitForAutotap) {
+                    recharging = false;
+                }
+                break;
+            }
         }
 
-        if (score > 0) {
+        if (score > 0 || boost) {
             try {
                 await new Promise((resolve) => {
                     cc[0][Object.keys(cc[0])[1]].onTouchStart('');
