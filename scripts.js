@@ -4,7 +4,7 @@ countclicks = 34
 // do not touch
 recharging = false
 skipClick = false
-boost = false
+_boost = false
 
 async function click() {
     let cc = document.querySelectorAll('div[class^="_notcoin"]');
@@ -19,7 +19,7 @@ async function click() {
     for (let step = 0; step < countclicks; step++) {
         score = parseInt(scoreElement.textContent);
 
-        if (!boost) {
+        if (!_boost) {
             if (skipClick) {
                 break;
             }
@@ -32,7 +32,7 @@ async function click() {
             }
         }
 
-        if (score > 0 || boost) {
+        if (score > 0 || _boost) {
             try {
                 await new Promise((resolve) => {
                     cc[0][Object.keys(cc[0])[1]].onTouchStart('');
@@ -54,4 +54,9 @@ function start() {
 
 function stop() {
     skipClick = true;
+    _boost = false;
+}
+
+function boost() {
+    _boost = true;
 }
