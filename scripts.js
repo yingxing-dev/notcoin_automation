@@ -41,6 +41,7 @@ async function click() {
             } catch (error) {}
         } else {
             recharging = true;
+            _boost = false;
             break;
         }
     }
