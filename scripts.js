@@ -1,5 +1,5 @@
 powerLimitForAutotap = 100
-clickPeriod_ms = 150
+clickPeriod_ms = 100
 
 // do not touch
 lastClickAt = 0
@@ -18,7 +18,7 @@ async function click() {
     } catch (error) {}
 
     if (Date.now() - lastClickAt >= clickPeriod_ms) {
-        clickPeriod_ms = Date.now();
+        lastClickAt = Date.now();
         
         score = parseInt(scoreElement.textContent);
 
