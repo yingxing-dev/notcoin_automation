@@ -120,7 +120,7 @@ async function click() {
     }
 }
 
-setInterval(click, 500);
+setInterval(click, clickPeriod_ms);
 
 function start() {
     skipClick = false;
