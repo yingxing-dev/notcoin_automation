@@ -1,5 +1,5 @@
 powerLimitForAutotap = 100
-clickPeriod_ms = 250
+clickPeriod_ms = 50
 
 // do not touch
 lastClickAt = 0
