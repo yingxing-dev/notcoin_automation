@@ -8,6 +8,10 @@ skipClick = false
 _boost = false
 
 async function click() {
+    if (window.location.href !== 'https://clicker.joincommunity.xyz/clicker') {
+        return
+    }
+    
     let cc = document.querySelectorAll('div[class^="_notcoin"]');
     let scoreElement = document.querySelector('div[class^="_scoreCurrent"]');
     let score = parseInt(scoreElement.textContent);
