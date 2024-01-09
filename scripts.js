@@ -1,7 +1,8 @@
 powerLimitForAutotap = 100
-countclicks = 34
+clickPeriod_ms = 250
 
 // do not touch
+lastClickAt = 0
 recharging = true
 skipClick = false
 _boost = false
@@ -15,8 +16,8 @@ async function click() {
         let imrocket = document.querySelectorAll('img[class^="_root"]');
         imrocket[0][Object.keys(imrocket[0])[1]].onClick();
     } catch (error) {}
-    
-    for (let step = 0; step < countclicks; step++) {
+
+    if (Date.now() - lastClickAt >= clickPeriod_ms) {
         score = parseInt(scoreElement.textContent);
 
         if (!_boost) {
@@ -44,6 +45,7 @@ async function click() {
             _boost = false;
             break;
         }
+        clickPeriod_ms = Date.now();
     }
 }
 
