@@ -38,7 +38,7 @@ C 07.01 сессия с браузера держится не более 3ех 
 - `powerLimitForAutotap`: параметр, отвечающий за определение целевого баланса. Скрипт будет автоматически тапать для достижения этого баланса.
 `В отличие от оригинального скрипта энергия будет растрачиваться до 0 при достижении выставленного лимита`
 
-- `countclicks`: параметр, определяющий количество нажатий для выполнения функции. Скрипт будет выполнять функцию заданное количество раз.
+- `clickPeriod_ms`: параметр, определяющий период нажатий в миллисекундах (минимум 50)
 
 По умолчанию скрипт выполняет нажатия каждые 500 мс, но вы можете экспериментировать с этим значением для достижения наилучших результатов. 
 Скрипт так же работает на свернутой вкладке или браузере.
@@ -70,9 +70,10 @@ boost();
 Сам скрипт:
 ```javascript
 powerLimitForAutotap = 100
-countclicks = 34
+clickPeriod_ms = 50
 
 // do not touch
+lastClickAt = 0
 recharging = true
 skipClick = false
 _boost = false
@@ -86,20 +87,22 @@ async function click() {
         let imrocket = document.querySelectorAll('img[class^="_root"]');
         imrocket[0][Object.keys(imrocket[0])[1]].onClick();
     } catch (error) {}
-    
-    for (let step = 0; step < countclicks; step++) {
+
+    if (Date.now() - lastClickAt >= clickPeriod_ms) {
+        clickPeriod_ms = Date.now();
+        
         score = parseInt(scoreElement.textContent);
 
         if (!_boost) {
             if (skipClick) {
-                break;
+                return;
             }
         
             if (recharging) {
                 if (score >= powerLimitForAutotap) {
                     recharging = false;
                 }
-                break;
+                return;
             }
         }
 
@@ -113,7 +116,6 @@ async function click() {
         } else {
             recharging = true;
             _boost = false;
-            break;
         }
     }
 }
@@ -132,5 +134,6 @@ function stop() {
 function boost() {
     _boost = true;
 }
+
 
 ```
