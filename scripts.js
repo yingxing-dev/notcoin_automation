@@ -18,18 +18,20 @@ async function click() {
     } catch (error) {}
 
     if (Date.now() - lastClickAt >= clickPeriod_ms) {
+        clickPeriod_ms = Date.now();
+        
         score = parseInt(scoreElement.textContent);
 
         if (!_boost) {
             if (skipClick) {
-                break;
+                return;
             }
         
             if (recharging) {
                 if (score >= powerLimitForAutotap) {
                     recharging = false;
                 }
-                break;
+                return;
             }
         }
 
@@ -43,9 +45,7 @@ async function click() {
         } else {
             recharging = true;
             _boost = false;
-            break;
         }
-        clickPeriod_ms = Date.now();
     }
 }
 
