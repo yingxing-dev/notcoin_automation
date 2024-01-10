@@ -63,7 +63,7 @@ boost();
 Сам скрипт:
 ```javascript
 powerLimitForAutotap = 100
-clickPeriod_ms = 100
+clickPeriod_ms = 150
 
 // do not touch
 lastClickAt = 0
