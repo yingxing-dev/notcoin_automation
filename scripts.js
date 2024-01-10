@@ -8,7 +8,7 @@ skipClick = false
 _boost = false
 
 async function click() {
-    if (!window.location.href.includes('https://clicker.joincommunity.xyz/clicker')) {
+    if (!window.location.href.includes('https://clicker.joincommunity.xyz/clicker#')) {
         return
     }
     
