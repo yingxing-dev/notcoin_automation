@@ -20,6 +20,7 @@ next_click_points = {
 }
 next_click_delay = clickPeriod_ms
 last_click_at = 0
+boost_mode = false;
 
 function simulateTouchEvent(element, type, touches) {
   const touchEvents = [];
@@ -90,9 +91,16 @@ function isPowerForClickAvailable() {
     } else {
         if (current_power <= 0) {
             power_recharging = true;
+
+            // disable boost mode
+            boost_mode = false;
         }
     }
     return !power_recharging
+}
+
+function isBoostMode() {
+    return boost_mode
 }
 
 function isUserNotOnClickerPage() {
@@ -105,7 +113,7 @@ async function update() {
     }
     
     if (updateCurrentPower() && updateCoinAndPositions()) {
-        if (!isPowerForClickAvailable()) {
+        if (!isPowerForClickAvailable() && !isBoostMode()) {
             return;
         }
         
@@ -121,3 +129,7 @@ async function update() {
 // start updater
 setInterval(update, 1);
 
+// user function - set to console if you touch on rocket
+function boost() {
+    boost_mode = true;
+}
