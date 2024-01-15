@@ -19,6 +19,7 @@ async function click() {
     try {
         let imrocket = document.querySelectorAll('img[class^="_root"]');
         imrocket[0][Object.keys(imrocket[0])[1]].onClick();
+        setTimeout(boost, 550);
     } catch (error) {}
 
     if (Date.now() - lastClickAt >= clickPeriod_ms) {
