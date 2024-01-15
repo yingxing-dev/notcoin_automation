@@ -16,7 +16,28 @@ notecoin_y2 = 0;
 // click parameters : do not touch
 next_click_points = {
     "x": 0,
-    "y": 0
+    "y": 0,
+    "id": 0
+}
+
+function simulateTouchEvent(element, type, touches) {
+  const touchEvents = [];
+
+  touches.forEach((touch) => {
+    touchEvents.push(new Touch({
+      clientX: touch.x,
+      clientY: touch.y,
+      identifier: touch.id,
+      target: element,
+    }));
+  });
+
+  element.dispatchEvent(new TouchEvent(type, {
+    touches: touchEvents,
+    view: window,
+    cancelable: true,
+    bubbles: true,
+  }));
 }
 
 function getRandomArbitrary(min, max) {
@@ -37,7 +58,8 @@ function updateCoinAndPositions() {
         // update next touch data
         next_click_points = {
             "x": getRandomArbitrary(notecoin_x1, notecoin_x2),
-            "y": getRandomArbitrary(notecoin_y1, notecoin_y2)
+            "y": getRandomArbitrary(notecoin_y1, notecoin_y2),
+            "id": 0
         }
     } catch(error) {
         return false
@@ -51,10 +73,11 @@ function isUserNotOnClickerPage() {
 
 async function update() {
     if (!isUserNotOnClickerPage() && updateCoinAndPositions()) {
-        
+        simulateTouchEvent(notecoin, 'touch', [])
     }
 }
 
+// start updater
 setInterval(update, clickPeriod_ms);
 
 function start() {
