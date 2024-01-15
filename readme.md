@@ -62,7 +62,7 @@ boost();
 
 Сам скрипт:
 ```javascript
-powerLimitForAutotap = 100
+powerLimitForAutotap = 1000
 clickPeriod_ms = 150
 
 // do not touch
@@ -81,12 +81,12 @@ async function click() {
     let score = parseInt(scoreElement.textContent);
     
     try {
-        let imrocket = document.querySelectorAll('img[class^="_root"]');
-        imrocket[0][Object.keys(imrocket[0])[1]].onClick();
-        setTimeout(boost, 550);
-    } catch (error) {
-        _boost = false;
-    }
+        if (_boost) {
+            let imrocket = document.querySelectorAll('img[class^="_root"]');
+            imrocket[0][Object.keys(imrocket[0])[1]].onClick();
+            setTimeout(boost, 550);
+        }
+    } catch (error) {}
 
     if (Date.now() - lastClickAt >= clickPeriod_ms) {
         lastClickAt = Date.now();
@@ -134,6 +134,7 @@ function stop() {
 function boost() {
     _boost = true;
 }
+
 ```
 
 # ИСПОЛЬЗУЙТЕ НА СВОЙ СТРАХ И РИСК, ИБО КОД ЭКСПЕРЕМЕНТАЛЬНЫЙ
