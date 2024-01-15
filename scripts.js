@@ -2,61 +2,60 @@ powerLimitForAutotap = 1000
 clickPeriod_ms = 150
 
 // do not touch
-lastClickAt = 0
 recharging = true
 skipClick = false
 _boost = false
 
-async function click() {
-    if (window.location.href !== "https://clicker.joincommunity.xyz/clicker" && !window.location.href.includes('https://clicker.joincommunity.xyz/clicker#')) {
-        return
-    }
-    
-    let cc = document.querySelectorAll('div[class^="_notcoin"]');
-    let scoreElement = document.querySelector('div[class^="_scoreCurrent"]');
-    let score = parseInt(scoreElement.textContent);
-    
+// coin parameters : do not touch
+notecoin = null
+notecoin_x1 = 0;
+notecoin_y1 = 0;
+notecoin_x2 = 0;
+notecoin_y2 = 0;
+
+// click parameters : do not touch
+next_click_points = {
+    "x": 0,
+    "y": 0
+}
+
+function getRandomArbitrary(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+function updateCoinAndPositions() {
     try {
-        if (_boost) {
-            let imrocket = document.querySelectorAll('img[class^="_root"]');
-            imrocket[0][Object.keys(imrocket[0])[1]].onClick();
-            setTimeout(boost, 550);
-        }
-    } catch (error) {}
-
-    if (Date.now() - lastClickAt >= clickPeriod_ms) {
-        lastClickAt = Date.now();
+        notecoin = document.querySelectorAll('div[class^="_notcoin"]')[0]
         
-        score = parseInt(scoreElement.textContent);
+        // update coin boundary data
+        let coinBound = notecoin.getBoundingClientRect()
+        notecoin_x1 = coinBound.left
+        notecoin_y1 = coinBound.top
+        notecoin_x2 = coinBound.right
+        notecoin_y2 = coinBound.bottom
+    
+        // update next touch data
+        next_click_points = {
+            "x": getRandomArbitrary(notecoin_x1, notecoin_x2),
+            "y": getRandomArbitrary(notecoin_y1, notecoin_y2)
+        }
+    } catch(error) {
+        return false
+    }
+    return true
+}
 
-        if (!_boost) {
-            if (skipClick) {
-                return;
-            }
+function isUserNotOnClickerPage() {
+    return window.location.href !== "https://clicker.joincommunity.xyz/clicker" && !window.location.href.includes('https://clicker.joincommunity.xyz/clicker#');
+}
+
+async function update() {
+    if (!isUserNotOnClickerPage() && updateCoinAndPositions()) {
         
-            if (recharging) {
-                if (score >= powerLimitForAutotap) {
-                    recharging = false;
-                }
-                return;
-            }
-        }
-
-        if (score > 0 || _boost) {
-            try {
-                await new Promise((resolve) => {
-                    cc[0][Object.keys(cc[0])[1]].onTouchStart('');
-                    setTimeout(resolve, 100);
-                });
-            } catch (error) {}
-        } else {
-            recharging = true;
-            _boost = false;
-        }
     }
 }
 
-setInterval(click, clickPeriod_ms);
+setInterval(update, clickPeriod_ms);
 
 function start() {
     skipClick = false;
