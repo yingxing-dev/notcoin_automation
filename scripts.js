@@ -1,11 +1,6 @@
 powerLimitForAutotap = 1000
 clickPeriod_ms = 150
 
-// do not touch
-recharging = true
-skipClick = false
-_boost = false
-
 // coin parameters : do not touch
 notecoin = null
 notecoin_x1 = 0;
@@ -13,12 +8,18 @@ notecoin_y1 = 0;
 notecoin_x2 = 0;
 notecoin_y2 = 0;
 
+// power parameters : do not touch
+power_recharging = true
+current_power = 0
+
 // click parameters : do not touch
 next_click_points = {
     "x": 0,
     "y": 0,
     "id": 0
 }
+next_click_delay = clickPeriod_ms
+last_click_at = 0
 
 function simulateTouchEvent(element, type, touches) {
   const touchEvents = [];
@@ -44,6 +45,11 @@ function getRandomArbitrary(min, max) {
   return Math.random() * (max - min) + min;
 }
 
+function updateNextClickDelay() {
+    last_click_at = Date.now()
+    next_click_delay = clickPeriod_ms + getRandomArbitrary(0, 75)
+}
+
 function updateCoinAndPositions() {
     try {
         notecoin = document.querySelectorAll('div[class^="_notcoin"]')[0]
@@ -67,28 +73,51 @@ function updateCoinAndPositions() {
     return true
 }
 
+function updateCurrentPower() {
+    try {
+        current_power = parseInt(document.querySelector('div[class^="_scoreCurrent"]').textContent);
+    } catch (error) {
+        return false
+    }
+    return true
+}
+
+function isPowerForClickAvailable() {
+    if (power_recharging) {
+        if (current_power >= powerLimitForAutotap) {
+            power_recharging = false;
+        }
+    } else {
+        if (current_power <= 0) {
+            power_recharging = true;
+        }
+    }
+    return !power_recharging
+}
+
 function isUserNotOnClickerPage() {
     return window.location.href !== "https://clicker.joincommunity.xyz/clicker" && !window.location.href.includes('https://clicker.joincommunity.xyz/clicker#');
 }
 
 async function update() {
-    if (!isUserNotOnClickerPage() && updateCoinAndPositions()) {
-        simulateTouchEvent(notecoin, 'touch', [])
+    if (Date.now() - last_click_at < next_click_delay || isUserNotOnClickerPage()) {
+        return;
+    }
+    
+    if (updateCurrentPower() && updateCoinAndPositions()) {
+        if (!isPowerForClickAvailable()) {
+            return;
+        }
+        
+        simulateTouchEvent(notecoin, 'touchstart', [next_click_points])
+        updateNextClickDelay()
+        
+        setTimeout(function() {
+            simulateTouchEvent(notecoin, 'touchend', [next_click_points])
+        }, 100)
     }
 }
 
 // start updater
-setInterval(update, clickPeriod_ms);
+setInterval(update, 1);
 
-function start() {
-    skipClick = false;
-}
-
-function stop() {
-    skipClick = true;
-    _boost = false;
-}
-
-function boost() {
-    _boost = true;
-}
