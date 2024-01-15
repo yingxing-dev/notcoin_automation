@@ -14,7 +14,7 @@ https://t.me/notcoin_bot?start=rp_2842162
 1. Нажмите клавишу F12 (или нажмите правую кнопку мыши и выберите "Посмотреть код"), затем перейдите на вкладку "Network" (или "Сеть"). 
 2. Нажмите кнопку, отвечающую за вход в приложение.
 3. Найдите событие "event", как показано на изображении.
-![img_2.png](2.png)
+![2.png](2.png)
 4. Из интересующего нас события скопируйте параметр "u" (ссылка будет иметь примерно следующий вид):
    ```
    https://clicker.joincommunity.xyz/clicker#tgWebAppData=query_id%*D**GO*-**AA**AI***gwalO3m%26user%3D%257B%2522id%2522%253A2****0478%252C%2522first_name%2522%253A%2522*******%2522%252C%2522last_name%2522%253A%2522*******%2522%252C%2522username%2522%253A%2522******%2522%252C%2522language_code%2522%253A%2522ru%2522%252C%2522is_premium%2522%253Atrue%252C%2522allows_write_to_pm%2522%253Atrue%257D%26auth_date%3D170**16279%26hash%3D7dfa***db35***b593aa80f3***9858ca0649c5***cd001bf888888b770a3ff0e&tgWebAppVersion=7.0&tgWebAppPlatform=web&tgWebAppThemeParams=%7B%22bg_color%22%3A%22%23ffffff%22%2C%22button_color%22%3A%22%233390ec%22%2C%22button_text_color%22%3A%22%23ffffff%22%2C%22hint_color%22%3A%22%23707579%22%2C%22link_color%22%3A%22%2300488f%22%2C%22secondary_bg_color%22%3A%22%23f4f4f5%22%2C%22text_color%22%3A%22%23000000%22%2C%22header_bg_color%22%3A%22%23ffffff%22%2C%22accent_text_color%22%3A%22%233390ec%22%2C%22section_bg_color%22%3A%22%23ffffff%22%2C%22section_header_text_color%22%3A%22%233390ec%22%2C%22subtitle_text_color%22%3A%22%23707579%22%2C%22destructive_text_color%22%3A%22%23df3f40%22%7D
@@ -22,7 +22,7 @@ https://t.me/notcoin_bot?start=rp_2842162
 8. В скопированной ссылке замените параметр "tgWebAppPlatform=web" (иногда "tgWebAppPlatform=weba") на "tgWebAppPlatform=ios".
 Измененную ссылку отправляем в браузер.
 9. Откройте измененную ссылку в браузере.
-![img_3.png](img_3.png)
+![3.png](3.png)
 
 
 ### ВАЖНО
