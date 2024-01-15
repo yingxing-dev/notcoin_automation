@@ -1,4 +1,4 @@
-powerLimitForAutotap = 100
+powerLimitForAutotap = 1000
 clickPeriod_ms = 150
 
 // do not touch
