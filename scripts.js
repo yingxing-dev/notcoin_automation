@@ -85,6 +85,16 @@ function updateCurrentPower() {
     return true
 }
 
+function updateBoostState() { // experimental
+    try {
+        let imrocket = document.querySelectorAll('img[class^="_root"]');
+        imrocket[0][Object.keys(imrocket[0])[1]].onClick();
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
 function isPowerForClickAvailable() {
     if (power_recharging) {
         if (current_power >= powerLimitForAutotap) {
@@ -112,6 +122,10 @@ function isUserNotOnClickerPage() {
 async function update() {
     if (Date.now() - last_click_at < next_click_delay || isUserNotOnClickerPage()) {
         return;
+    }
+
+    if (updateBoostState()) { // experimental
+        boost();
     }
     
     if (updateCurrentPower() && updateCoinAndPositions()) {
