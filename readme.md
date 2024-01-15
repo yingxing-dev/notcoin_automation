@@ -41,16 +41,7 @@ C 07.01 сессия с браузера держится не более 3ех 
 - `clickPeriod_ms`: параметр, определяющий период нажатий в миллисекундах (минимум 150-200)
 
 # Дополнительные функции для ручного контроля
-## Остановка автокликера
-```javascript
-stop();
-```
-## Возобновление работы автокликера
-```javascript
-start();
-```
-
-## Запуск автокликера при бусте (кол-во энергии игнорируется, работает до тех пор, пока энергия не закончится, а после отключается сам)
+## Запуск автокликера при бусте (увы пока не знаю как сделать автоподбор ракетки. Кол-во энергии игнорируется, работает до тех пор, пока энергия не закончится, а после отключается сам)
 ```javascript
 boost();
 ```
@@ -65,76 +56,138 @@ boost();
 powerLimitForAutotap = 1000
 clickPeriod_ms = 150
 
-// do not touch
-lastClickAt = 0
-recharging = true
-skipClick = false
-_boost = false
+// coin parameters : do not touch
+notecoin = null
+notecoin_x1 = 0;
+notecoin_y1 = 0;
+notecoin_x2 = 0;
+notecoin_y2 = 0;
 
-async function click() {
-    if (window.location.href !== "https://clicker.joincommunity.xyz/clicker" && !window.location.href.includes('https://clicker.joincommunity.xyz/clicker#')) {
-        return
-    }
-    
-    let cc = document.querySelectorAll('div[class^="_notcoin"]');
-    let scoreElement = document.querySelector('div[class^="_scoreCurrent"]');
-    let score = parseInt(scoreElement.textContent);
-    
+// power parameters : do not touch
+power_recharging = true
+current_power = 0
+
+// click parameters : do not touch
+next_click_points = {
+    "x": 0,
+    "y": 0,
+    "id": 0
+}
+next_click_delay = clickPeriod_ms
+last_click_at = 0
+boost_mode = false;
+
+function simulateTouchEvent(element, type, touches) {
+  const touchEvents = [];
+
+  touches.forEach((touch) => {
+    touchEvents.push(new Touch({
+      clientX: touch.x,
+      clientY: touch.y,
+      identifier: touch.id,
+      target: element,
+    }));
+  });
+
+  element.dispatchEvent(new TouchEvent(type, {
+    touches: touchEvents,
+    view: window,
+    cancelable: true,
+    bubbles: true,
+  }));
+}
+
+function getRandomArbitrary(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+function updateNextClickDelay() {
+    last_click_at = Date.now()
+    next_click_delay = clickPeriod_ms + getRandomArbitrary(0, 75)
+}
+
+function updateCoinAndPositions() {
     try {
-        if (_boost) {
-            let imrocket = document.querySelectorAll('img[class^="_root"]');
-            imrocket[0][Object.keys(imrocket[0])[1]].onClick();
-            setTimeout(boost, 550);
-        }
-    } catch (error) {}
-
-    if (Date.now() - lastClickAt >= clickPeriod_ms) {
-        lastClickAt = Date.now();
+        notecoin = document.querySelectorAll('div[class^="_notcoin"]')[0]
         
-        score = parseInt(scoreElement.textContent);
+        // update coin boundary data
+        let coinBound = notecoin.getBoundingClientRect()
+        notecoin_x1 = coinBound.left
+        notecoin_y1 = coinBound.top
+        notecoin_x2 = coinBound.right
+        notecoin_y2 = coinBound.bottom
+    
+        // update next touch data
+        next_click_points = {
+            "x": getRandomArbitrary(notecoin_x1, notecoin_x2),
+            "y": getRandomArbitrary(notecoin_y1, notecoin_y2),
+            "id": 0
+        }
+    } catch(error) {
+        return false
+    }
+    return true
+}
 
-        if (!_boost) {
-            if (skipClick) {
-                return;
-            }
+function updateCurrentPower() {
+    try {
+        current_power = parseInt(document.querySelector('div[class^="_scoreCurrent"]').textContent);
+    } catch (error) {
+        return false
+    }
+    return true
+}
+
+function isPowerForClickAvailable() {
+    if (power_recharging) {
+        if (current_power >= powerLimitForAutotap) {
+            power_recharging = false;
+        }
+    } else {
+        if (current_power <= 0) {
+            power_recharging = true;
+
+            // disable boost mode
+            boost_mode = false;
+        }
+    }
+    return !power_recharging
+}
+
+function isBoostMode() {
+    return boost_mode
+}
+
+function isUserNotOnClickerPage() {
+    return window.location.href !== "https://clicker.joincommunity.xyz/clicker" && !window.location.href.includes('https://clicker.joincommunity.xyz/clicker#');
+}
+
+async function update() {
+    if (Date.now() - last_click_at < next_click_delay || isUserNotOnClickerPage()) {
+        return;
+    }
+    
+    if (updateCurrentPower() && updateCoinAndPositions()) {
+        if (!isPowerForClickAvailable() && !isBoostMode()) {
+            return;
+        }
         
-            if (recharging) {
-                if (score >= powerLimitForAutotap) {
-                    recharging = false;
-                }
-                return;
-            }
-        }
-
-        if (score > 0 || _boost) {
-            try {
-                await new Promise((resolve) => {
-                    cc[0][Object.keys(cc[0])[1]].onTouchStart('');
-                    setTimeout(resolve, 100);
-                });
-            } catch (error) {}
-        } else {
-            recharging = true;
-            _boost = false;
-        }
+        simulateTouchEvent(notecoin, 'touchstart', [next_click_points])
+        updateNextClickDelay()
+        
+        setTimeout(function() {
+            simulateTouchEvent(notecoin, 'touchend', [next_click_points])
+        }, 100)
     }
 }
 
-setInterval(click, clickPeriod_ms);
+// start updater
+setInterval(update, 1);
 
-function start() {
-    skipClick = false;
-}
-
-function stop() {
-    skipClick = true;
-    _boost = false;
-}
-
+// user function - set to console if you touch on rocket
 function boost() {
-    _boost = true;
+    boost_mode = true;
 }
-
 ```
 
 # ИСПОЛЬЗУЙТЕ НА СВОЙ СТРАХ И РИСК, ИБО КОД ЭКСПЕРЕМЕНТАЛЬНЫЙ
