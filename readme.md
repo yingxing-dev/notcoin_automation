@@ -83,6 +83,7 @@ async function click() {
     try {
         let imrocket = document.querySelectorAll('img[class^="_root"]');
         imrocket[0][Object.keys(imrocket[0])[1]].onClick();
+        setTimeout(boost, 550);
     } catch (error) {}
 
     if (Date.now() - lastClickAt >= clickPeriod_ms) {
@@ -131,6 +132,7 @@ function stop() {
 function boost() {
     _boost = true;
 }
+
 ```
 
 # ИСПОЛЬЗУЙТЕ НА СВОЙ СТРАХ И РИСК, ИБО КОД ЭКСПЕРЕМЕНТАЛЬНЫЙ
