@@ -113,10 +113,10 @@ function updateCoinAndPositions() {
         // update coin boundary data
         let coinBound = notecoin.getBoundingClientRect()
         let padding = coinBound.width / 100 * getRandomArbitrary(5, 20)
-        notecoin_x1 = coinBound.left
-        notecoin_y1 = coinBound.top
-        notecoin_x2 = coinBound.right
-        notecoin_y2 = coinBound.bottom
+        notecoin_x1 = coinBound.left + padding
+        notecoin_y1 = coinBound.top + padding
+        notecoin_x2 = coinBound.right - padding
+        notecoin_y2 = coinBound.bottom - padding
     
         // update next touch data
         next_click_points = {
@@ -189,7 +189,6 @@ setInterval(update, 1);
 function boost() {
     boost_mode = true;
 }
-
 ```
 
 # ИСПОЛЬЗУЙТЕ НА СВОЙ СТРАХ И РИСК, ИБО КОД ЭКСПЕРЕМЕНТАЛЬНЫЙ
