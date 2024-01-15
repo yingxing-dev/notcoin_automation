@@ -132,5 +132,6 @@ setInterval(update, 1);
 
 // user function - set to console if you touch on rocket
 function boost() {
+    power_recharging = false;
     boost_mode = true;
 }
