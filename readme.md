@@ -53,6 +53,7 @@ boost();
 
 Сам скрипт:
 ```javascript
+// user values : you can edit this
 powerLimitForAutotap = 1000
 clickPeriod_ms = 150
 
