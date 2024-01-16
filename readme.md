@@ -186,7 +186,7 @@ async function update() {
         
         setTimeout(function() {
             simulateTouchEvent(notecoin, 'touchend', [next_click_points])
-        }, 100)
+        }, getRandomArbitrary(75, 120))
     }
 }
 
