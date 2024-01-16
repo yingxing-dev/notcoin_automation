@@ -38,12 +38,6 @@ C 07.01 сессия с браузера держится не более 3ех 
 
 - `clickPeriod_ms`: параметр, определяющий период нажатий в миллисекундах (минимум 150-200)
 
-# Дополнительные функции для ручного контроля
-## Запуск автокликера при бусте (Если автоподбор ракеты не сработал - нажмите на ракету вручную и впишите в консоль эту команду. Кол-во энергии игнорируется, работает до тех пор, пока энергия не закончится, а после отключается сам)
-```javascript
-boost();
-```
-
 ### Как запустить
 
 1. Нажмите клавишу F12 (или откройте Исходный код страницы),
@@ -138,7 +132,7 @@ function updateCurrentPower() {
     return true
 }
 
-function updateBoostState() { // experimental
+function updateBoostState() {
     try {
         let imrocket = document.querySelectorAll('img[class^="_root"]');
         imrocket[0][Object.keys(imrocket[0])[1]].onClick();
@@ -177,8 +171,9 @@ async function update() {
         return;
     }
 
-    if (updateBoostState()) { // experimental
-        boost();
+    if (updateBoostState()) {
+        power_recharging = false;
+        boost_mode = true;
     }
     
     if (updateCurrentPower() && updateCoinAndPositions()) {
@@ -197,12 +192,6 @@ async function update() {
 
 // start updater
 setInterval(update, 1);
-
-// user function - set to console if you touch on rocket
-function boost() {
-    power_recharging = false;
-    boost_mode = true;
-}
 ```
 
 Над стабильностью кода я поработал, проблем не должно быть, но каждый берёт ответственность за результат САМ
