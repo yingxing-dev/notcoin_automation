@@ -85,7 +85,7 @@ function updateCurrentPower() {
     return true
 }
 
-function updateBoostState() { // experimental
+function updateBoostState() {
     try {
         let imrocket = document.querySelectorAll('img[class^="_root"]');
         imrocket[0][Object.keys(imrocket[0])[1]].onClick();
@@ -124,8 +124,9 @@ async function update() {
         return;
     }
 
-    if (updateBoostState()) { // experimental
-        boost();
+    if (updateBoostState()) {
+        power_recharging = false;
+        boost_mode = true;
     }
     
     if (updateCurrentPower() && updateCoinAndPositions()) {
@@ -144,9 +145,3 @@ async function update() {
 
 // start updater
 setInterval(update, 1);
-
-// user function - set to console if you touch on rocket
-function boost() {
-    power_recharging = false;
-    boost_mode = true;
-}
