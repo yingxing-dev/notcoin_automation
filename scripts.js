@@ -123,6 +123,7 @@ function updateBoostState() {
                 awaiting_time = getRandomArbitrary(1250, 1950);
                 awaiting_boost = true;
             }
+            return false;
         }
         return Date.now() - awaiting_from >= awaiting_time;
     } catch (error) {
