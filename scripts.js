@@ -99,6 +99,17 @@ function updateCurrentPower() {
     return true
 }
 
+function detectBoost() {
+    let imrocket = document.querySelectorAll('img[class^="_root"]');
+    if (imrocket !== undefined && imrocket !== null) {
+        try {
+            let boost = imrocket[0][Object.keys(imrocket[0])[1]];
+            return boost !== null && boost !== undefined;
+        } catch (error) {}
+    }
+    return false
+}
+
 function updateBoostState() {
     try {
         let imrocket = document.querySelectorAll('img[class^="_root"]');
