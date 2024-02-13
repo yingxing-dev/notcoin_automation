@@ -165,31 +165,27 @@ function detectBoost() {
 }
 
 function updateBoostState() {
-    try {
-        if (!awaiting_boost) {
-            if (detectBoost()) {
-                awaiting_from = Date.now();
-                awaiting_time = getRandomArbitrary(1250, 1950);
-                awaiting_boost = true;
-            }
-            return false;
-        } else if (!awaiting_finished) {
-            if (Date.now() - awaiting_from >= awaiting_time) {
-                 try {
-                    let imrocket = document.querySelectorAll('img[class^="_root"]');
-                    let boost = imrocket[0][Object.keys(imrocket[0])[1]];
-                    if (boost !== null && boost !== undefined) {
-                        boost.onClick();
-                        awaiting_finished = true;
-                        return awaiting_finished;
-                    }
-                } catch (error) {}
-            }
+    if (!awaiting_boost) {
+        if (detectBoost()) {
+            awaiting_from = Date.now();
+            awaiting_time = getRandomArbitrary(1250, 1950);
+            awaiting_boost = true;
         }
-        return awaiting_finished;
-    } catch (error) {
         return false;
+    } else if (!awaiting_finished) {
+        if (Date.now() - awaiting_from >= awaiting_time) {
+            try {
+                let imrocket = document.querySelectorAll('img[class^="_root"]');
+                let boost = imrocket[0][Object.keys(imrocket[0])[1]];
+                if (boost !== null && boost !== undefined) {
+                    boost.onClick();
+                    awaiting_finished = true;
+                    return awaiting_finished;
+                }
+            } catch (error) {}
+        }
     }
+    return awaiting_finished;
 }
 
 function isPowerForClickAvailable() {
