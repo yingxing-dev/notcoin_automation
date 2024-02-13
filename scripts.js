@@ -1,6 +1,7 @@
 // user values : you can edit this
 powerLimitForAutotap = 1000
 clickPeriod_ms = 150
+useDoubleClick = true
 
 // coin parameters : do not touch
 notecoin = null
@@ -19,7 +20,7 @@ next_click_points = {
     "y": 0,
     "id": 0
 }
-next_boost_click_points = {
+next_second_click_points = {
     "x": 0,
     "y": 0,
     "id": 0
@@ -76,8 +77,8 @@ function updateCoinAndPositions() {
             "id": 0
         }
 
-        if (boost_mode) {
-            next_boost_click_points = {
+        if (useDoubleClick) {
+            next_second_click_points = {
                 "x": getRandomArbitrary(notecoin_x1, notecoin_x2),
                 "y": getRandomArbitrary(notecoin_y1, notecoin_y2),
                 "id": 1
@@ -154,11 +155,11 @@ async function update() {
             simulateTouchEvent(notecoin, 'touchend', [next_click_points])
         }, getRandomArbitrary(75, 120))
 
-        if (boost_mode) {
+        if (useDoubleClick) {
             setTimeout(function() {
-                simulateTouchEvent(notecoin, 'touchstart', [next_boost_click_points])
+                simulateTouchEvent(notecoin, 'touchstart', [next_second_click_points])
                 setTimeout(function() {
-                    simulateTouchEvent(notecoin, 'touchend', [next_boost_click_points])
+                    simulateTouchEvent(notecoin, 'touchend', [next_second_click_points])
                 }, getRandomArbitrary(75, 120))
             }, getRandomArbitrary(30, 75));
         }
