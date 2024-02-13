@@ -30,6 +30,7 @@ last_click_at = 0
 
 // boost parameters : do not touch
 boost_mode = false;
+awaiting_finished = false;
 awaiting_boost = false;
 awaiting_from = 0;
 awaiting_time = 0;
@@ -124,8 +125,20 @@ function updateBoostState() {
                 awaiting_boost = true;
             }
             return false;
+        } else if (!awaiting_finished) {
+            if (Date.now() - awaiting_from >= awaiting_time) {
+                 try {
+                    let imrocket = document.querySelectorAll('img[class^="_root"]');
+                    let boost = imrocket[0][Object.keys(imrocket[0])[1]];
+                    if (boost !== null && boost !== undefined) {
+                        boost.onClick();
+                        awaiting_finished = true;
+                        return awaiting_finished;
+                    }
+                } catch (error) {}
+            }
         }
-        return Date.now() - awaiting_from >= awaiting_time;
+        return awaiting_finished;
     } catch (error) {
         return false;
     }
@@ -147,6 +160,7 @@ function isPowerForClickAvailable() {
             awaiting_from = 0;
             awaiting_time = 0;
             awaiting_boost = false;
+            awaiting_finished = false;
         }
     }
     return !power_recharging
