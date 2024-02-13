@@ -27,7 +27,12 @@ next_second_click_points = {
 }
 next_click_delay = clickPeriod_ms
 last_click_at = 0
+
+// boost parameters : do not touch
 boost_mode = false;
+awaiting_boost = false;
+awaiting_from = 0;
+awaiting_time = 0;
 
 function simulateTouchEvent(element, type, touches) {
   const touchEvents = [];
@@ -112,9 +117,14 @@ function detectBoost() {
 
 function updateBoostState() {
     try {
-        let imrocket = document.querySelectorAll('img[class^="_root"]');
-        imrocket[0][Object.keys(imrocket[0])[1]].onClick();
-        return true;
+        if (!awaiting_boost) {
+            if (detectBoost()) {
+                awaiting_from = Date.now();
+                awaiting_time = getRandomArbitrary(1250, 1950);
+                awaiting_boost = true;
+            }
+        }
+        return Date.now() - awaiting_from >= awaiting_time;
     } catch (error) {
         return false;
     }
@@ -131,6 +141,11 @@ function isPowerForClickAvailable() {
 
             // disable boost mode
             boost_mode = false;
+
+            // clear boost cache
+            awaiting_from = 0;
+            awaiting_time = 0;
+            awaiting_boost = false;
         }
     }
     return !power_recharging
