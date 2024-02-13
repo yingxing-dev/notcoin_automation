@@ -19,6 +19,11 @@ next_click_points = {
     "y": 0,
     "id": 0
 }
+next_boost_click_points = {
+    "x": 0,
+    "y": 0,
+    "id": 0
+}
 next_click_delay = clickPeriod_ms
 last_click_at = 0
 boost_mode = false;
@@ -69,6 +74,14 @@ function updateCoinAndPositions() {
             "x": getRandomArbitrary(notecoin_x1, notecoin_x2),
             "y": getRandomArbitrary(notecoin_y1, notecoin_y2),
             "id": 0
+        }
+
+        if (boost_mode) {
+            next_boost_click_points = {
+                "x": getRandomArbitrary(notecoin_x1, notecoin_x2),
+                "y": getRandomArbitrary(notecoin_y1, notecoin_y2),
+                "id": 1
+            }
         }
     } catch(error) {
         return false
@@ -140,6 +153,15 @@ async function update() {
         setTimeout(function() {
             simulateTouchEvent(notecoin, 'touchend', [next_click_points])
         }, getRandomArbitrary(75, 120))
+
+        if (boost_mode) {
+            setTimeout(function() {
+                simulateTouchEvent(notecoin, 'touchstart', [next_boost_click_points])
+                setTimeout(function() {
+                    simulateTouchEvent(notecoin, 'touchend', [next_boost_click_points])
+                }, getRandomArbitrary(75, 120))
+            }, getRandomArbitrary(30, 75));
+        }
     }
 }
 
