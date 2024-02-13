@@ -37,6 +37,7 @@ C 07.01 сессия с браузера держится не более 3ех 
 `В отличие от оригинального скрипта энергия будет растрачиваться до 0 при достижении выставленного лимита`
 
 - `clickPeriod_ms`: параметр, определяющий период нажатий в миллисекундах (минимум 150-200)
+- `useDoubleClick`: параметр, определяющий использования двойного клика (для второго клика точки нажатия подбираются индивидуально, по умолчанию включён)
 
 ### Как запустить
 
@@ -48,6 +49,7 @@ C 07.01 сессия с браузера держится не более 3ех 
 // user values : you can edit this
 powerLimitForAutotap = 1000
 clickPeriod_ms = 150
+useDoubleClick = true
 
 // coin parameters : do not touch
 notecoin = null
@@ -62,6 +64,11 @@ current_power = 0
 
 // click parameters : do not touch
 next_click_points = {
+    "x": 0,
+    "y": 0,
+    "id": 0
+}
+next_second_click_points = {
     "x": 0,
     "y": 0,
     "id": 0
@@ -116,6 +123,14 @@ function updateCoinAndPositions() {
             "x": getRandomArbitrary(notecoin_x1, notecoin_x2),
             "y": getRandomArbitrary(notecoin_y1, notecoin_y2),
             "id": 0
+        }
+
+        if (useDoubleClick) {
+            next_second_click_points = {
+                "x": getRandomArbitrary(notecoin_x1, notecoin_x2),
+                "y": getRandomArbitrary(notecoin_y1, notecoin_y2),
+                "id": 1
+            }
         }
     } catch(error) {
         return false
@@ -187,6 +202,15 @@ async function update() {
         setTimeout(function() {
             simulateTouchEvent(notecoin, 'touchend', [next_click_points])
         }, getRandomArbitrary(75, 120))
+
+        if (useDoubleClick) {
+            setTimeout(function() {
+                simulateTouchEvent(notecoin, 'touchstart', [next_second_click_points])
+                setTimeout(function() {
+                    simulateTouchEvent(notecoin, 'touchend', [next_second_click_points])
+                }, getRandomArbitrary(75, 120))
+            }, getRandomArbitrary(30, 75));
+        }
     }
 }
 
